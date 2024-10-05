@@ -1,15 +1,16 @@
-import 'package:bid_bazaar/bottombar/bottombar.dart';
 import 'package:bid_bazaar/config/config.dart';
-import 'package:bid_bazaar/pages/bidding-page.dart';
-import 'package:bid_bazaar/pages/explore-page.dart';
-import 'package:bid_bazaar/pages/home-page.dart';
-import 'package:bid_bazaar/pages/profile-page.dart';
+import 'package:bid_bazaar/pages/provider/localization_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
+import 'generated/l10n.dart';
 import 'splash-screen/splash_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => LocalizationProvider()..init()),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -18,21 +19,25 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: bgAppBar),
-        useMaterial3: true,
-      ),
-      initialRoute: '/home',
-      routes: {
-        '/home': (context) => const Bottom_Appbar(),
-        '/explore': (context) => const ExplorePage(),
-        '/profile': (context) => const ProfilePage(),
-        '/bidding': (context) => const BiddingPage(),
-      },
-      home: const SplashScreen(),
-      debugShowCheckedModeBanner: false,
-    );
+    return Consumer<LocalizationProvider>(
+        builder: (context, localizationProvider, child) {
+      return MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: bgAppBar),
+          useMaterial3: true,
+        ),
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+        locale: localizationProvider.locale,
+        home: const SplashScreen(),
+        debugShowCheckedModeBanner: false,
+      );
+    });
   }
 }

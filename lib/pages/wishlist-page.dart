@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../config/config.dart';
+import '../generated/l10n.dart';
 
 class WishList extends StatefulWidget {
   const WishList({super.key});
@@ -68,7 +69,7 @@ class _WishListState extends State<WishList> {
         //       ),
         //     )),
         title: Text(
-          "Wish List",
+          S.of(context).wish_list,
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,

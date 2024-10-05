@@ -17,6 +17,7 @@ class _Bottom_AppbarState extends State<Bottom_Appbar> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
+    // const HomePage(),
     const HomePage(),
     const ExplorePage(),
     const HomePage(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../config/config.dart';
+import '../generated/l10n.dart';
 
 class NotificationView extends StatefulWidget {
   const NotificationView({super.key});
@@ -29,7 +30,7 @@ class _NotificationViewState extends State<NotificationView> {
           ),
         ),
         title: Text(
-          "Notification",
+          S.of(context).notifications,
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,

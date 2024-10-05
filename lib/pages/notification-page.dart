@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../config/config.dart';
+import '../generated/l10n.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -36,7 +37,7 @@ class _NotificationPageState extends State<NotificationPage> {
           ),
         ),
         title: Text(
-          "Notifications",
+          S.of(context).notifications,
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,

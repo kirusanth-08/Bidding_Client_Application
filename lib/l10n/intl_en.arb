@@ -1,0 +1,18 @@
+{
+    "name": "Flutter Localization",
+    "hello_world": "Hello World",
+    "example_text": "This is example of localization in flutter",
+    "world_text": "This world is so beautiful",
+    "language": "Language",
+    "gm": "Good Morning",
+    "create_account": "Create Account",
+    "sign_up": "Sign Up",
+    "already_account": "Already have an account",
+    "login_now": "Login In Now",
+    "login_here": "Login Here",
+    "login_wc": "Welcome back you've been missed",
+    "login": "Log In",
+    "create_new": "Create new account",
+    "notifications": "Notifications",
+    "wish_list": "Wish List"
+}
