@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-const apiUrl = 'https://platform.sense-media.app';
-const login = '${apiUrl}/api/Auth/leadlogin';
-const event = '${apiUrl}/api/Event/getevents';
-const forgot = '${apiUrl}/api/user/changepassword';
-const checkMobile = '${apiUrl}/api/Kiosk/CheckInMobileDevice';
-const export = '${apiUrl}/api/Kiosk/exportcontacts';
+const String apiUrl = 'http://192.168.200.78:5001';
+const login = '$apiUrl/api/Auth/leadlogin';
+const event = '$apiUrl/api/Event/getevents';
+const forgot = '$apiUrl/api/user/changepassword';
+const checkMobile = '$apiUrl/api/Kiosk/CheckInMobileDevice';
+const export = '$apiUrl/api/Kiosk/exportcontacts';
 
 const double fontSize = 13;
 

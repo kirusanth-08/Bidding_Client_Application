@@ -48,7 +48,7 @@ class _Bottom_AppbarState extends State<Bottom_Appbar> {
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.grid_view_rounded,
                 size: 35,
                 color: Color(0xFF0E75C0),
@@ -64,7 +64,7 @@ class _Bottom_AppbarState extends State<Bottom_Appbar> {
               fontSize: 30,
               fontWeight: FontWeight.bold,
               // color: Colors.black,
-              color: Color(0xFF051E54),
+              color: const Color(0xFF051E54),
               fontFamily: GoogleFonts.poppins().fontFamily,
             )),
         centerTitle: true,
@@ -76,7 +76,7 @@ class _Bottom_AppbarState extends State<Bottom_Appbar> {
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.grid_view_rounded,
                 size: 35,
                 color: Color(0xFF0E75C0),
@@ -90,7 +90,7 @@ class _Bottom_AppbarState extends State<Bottom_Appbar> {
         title: Container(
           height: 150,
           width: 200,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage("assets/images/logo-vithu.png"))),
         ),
@@ -138,7 +138,7 @@ class _Bottom_AppbarState extends State<Bottom_Appbar> {
           onTap: _onItemTapped,
         ),
       ),
-      drawer: Drawer_Page(),
+      drawer: const Drawer_Page(),
     );
   }
 }

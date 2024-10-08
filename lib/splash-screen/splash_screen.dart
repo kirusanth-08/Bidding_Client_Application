@@ -85,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: bgWhite,
                   fontFamily: GoogleFonts.poppins().fontFamily),
             ),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             const SpinKitFadingCircle(

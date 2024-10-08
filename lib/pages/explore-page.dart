@@ -36,9 +36,9 @@ class _ExplorePageState extends State<ExplorePage> {
           onTap: () {
             Navigator.pop(context);
           },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: const Icon(
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Icon(
               Icons.menu_outlined,
               color: Colors.white,
             ),
@@ -47,8 +47,8 @@ class _ExplorePageState extends State<ExplorePage> {
         // leadingWidth: 0,
         // automaticallyImplyLeading: false,
         title: PreferredSize(
-            preferredSize: Size.fromHeight(40),
-            child: Container(
+            preferredSize: const Size.fromHeight(40),
+            child: SizedBox(
               height: 40,
               width: 350,
               child: TextField(
@@ -59,11 +59,11 @@ class _ExplorePageState extends State<ExplorePage> {
                 decoration: InputDecoration(
                   hintText: "Search",
                   hintStyle: GoogleFonts.inter(
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF90A4AE))),
-                  prefixIcon: Icon(
+                  prefixIcon: const Icon(
                     Icons.search,
                     color: Color(0xFF90A4AE),
                   ),
@@ -71,9 +71,9 @@ class _ExplorePageState extends State<ExplorePage> {
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
                   ),
-                  fillColor: Color(0xFFFFFFFF),
+                  fillColor: const Color(0xFFFFFFFF),
                   filled: true,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                 ),
               ),
             )),
@@ -118,9 +118,9 @@ class _ExplorePageState extends State<ExplorePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(Icons.location_on_outlined),
+                            Icon(Icons.category_outlined),
                             Text(
-                              'Melbourne',
+                              'Category',
                               style: TextStyle(
                                 color: bgBlack,
                               ),
@@ -152,7 +152,7 @@ class _ExplorePageState extends State<ExplorePage> {
                           children: [
                             Icon(Icons.location_on_outlined),
                             Text(
-                              'Melbourne',
+                              'Location',
                               style: TextStyle(
                                 color: bgBlack,
                               ),
@@ -245,9 +245,9 @@ class _ExplorePageState extends State<ExplorePage> {
                                     // border:
                                     //     Border.all(color: Colors.black, width: 2),
                                   ),
-                                  child: Center(
+                                  child: const Center(
                                     child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
+                                      padding: EdgeInsets.all(4.0),
                                       child: Text(
                                         "View",
                                         style: TextStyle(
