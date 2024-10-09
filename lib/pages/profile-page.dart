@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../config/config.dart';
 import 'feedback.dart';
 import 'wishlist-page.dart';
@@ -33,6 +34,16 @@ class _ProfilePageState extends State<ProfilePage> {
     userName = "Hariyanne";
     userEmail = "hariyanne@example.com";
     userProfile = "https://picsum.photos/400/200"; // Example profile URL
+
+    // Load userId from SharedPreferences and assign to userName
+    _loadUserId();
+  }
+
+  Future<void> _loadUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('userId') ?? userName;
+    });
   }
 
   Future<void> _logout(BuildContext context) async {
@@ -50,6 +61,33 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  void _showLogoutConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Logout'),
+          content: Text('Are you sure you want to logout?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text('Logout'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _logout(context); // Proceed with logout
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,6 +95,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: bgAppBar,
         automaticallyImplyLeading: false,
+        title: Text('Profile', style: GoogleFonts.inter(color: bgWhite)),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -84,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
-                                'name',
+                                'Name',
                                 style: GoogleFonts.inter(
                                   textStyle: const TextStyle(
                                     fontSize: 10,
@@ -185,7 +224,7 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 13),
               // Add the logout button
               ElevatedButton(
-                onPressed: () => _logout(context),
+                onPressed: () => _showLogoutConfirmationDialog(context),
                 child: Text('Logout'),
               ),
             ],
