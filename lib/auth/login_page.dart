@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../bottombar/bottombar.dart';
 import '../config/config.dart';
 import '../generated/l10n.dart';
@@ -24,6 +25,39 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   bool passToggle = true; // Define passToggle variable
+
+  @override
+  void initState() {
+    super.initState();
+    _showStoredToken();
+  }
+
+  Future<void> _showStoredToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Stored Token'),
+              content: Text(token),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      });
+    }
+  }
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) {
@@ -52,9 +86,14 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(response.body);
 
-        if (data.containsKey('token') && data['token'] != null) {
+        if (data.containsKey('token') &&
+            data['token'] != null &&
+            data.containsKey('userId') &&
+            data['userId'] != null) {
           await TokenManager.saveToken(
               data['token']); // Save token using TokenManager
+          await TokenManager.saveUserId(
+              data['userId']); // Save userId using TokenManager
 
           // Navigate to the next page or show a success message
           ScaffoldMessenger.of(context).showSnackBar(
