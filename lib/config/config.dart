@@ -1,9 +1,10 @@
 import 'dart:ui';
 
-const String apiUrl = 'http://192.168.200.78:5001';
-const login = '$apiUrl/api/Auth/leadlogin';
-const event = '$apiUrl/api/Event/getevents';
-const forgot = '$apiUrl/api/user/changepassword';
+const String apiUrl = 'http://192.168.21.78:3000';
+const login = '$apiUrl/api/users/v1/login';
+const signup = '$apiUrl/api/register/v1/register';
+const event = '$apiUrl/api/register/v1/getevents';
+const forgot = '$apiUrl/api/register/v1/changepassword';
 const checkMobile = '$apiUrl/api/Kiosk/CheckInMobileDevice';
 const export = '$apiUrl/api/Kiosk/exportcontacts';
 

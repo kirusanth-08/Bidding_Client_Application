@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('$apiUrl/api/user/login'),
+        Uri.parse('$apiUrl/api/users/v1/login'),
         headers: {
           'Content-Type': 'application/json',
         },

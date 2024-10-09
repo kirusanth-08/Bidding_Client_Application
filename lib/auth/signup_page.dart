@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config/config.dart';
+import '../utils/token_manager.dart'; // Correct import for TokenManager
 import 'login_page.dart';
 
 class SignupPage extends StatefulWidget {
@@ -21,7 +22,6 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool passToggle = true;
   bool confirmToggle = true;
@@ -34,66 +34,57 @@ class _SignupPageState extends State<SignupPage> {
         _isLoading = true;
       });
 
-      final String fullName = nameController.text;
       final String email = emailController.text;
       final String password = passwordController.text;
-      final String phoneNo = phoneController.text;
-      final String address = addressController.text;
+      final String phoneNumber = phoneController.text;
 
       try {
         final response = await http.post(
-          Uri.parse(
-              '$apiUrl/api/user/signup'), // Replace with your API endpoint
+          Uri.parse('$apiUrl/api/users/v1/register'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(<String, String>{
-            'fullName': fullName,
             'email': email,
+            'phoneNumber': phoneNumber,
             'password': password,
-            'userType': 'patient', // or 'doctor', depending on your logic
-            'phoneNo': phoneNo,
-            'address': address,
           }),
         );
 
+        print('API Response: ${response.body}');
+        print('API Response Status Code: ${response.statusCode}');
+
         if (response.statusCode == 201) {
-          // If the server returns a 201 Created response, parse the JSON.
-          final Map<String, dynamic> responseData = jsonDecode(response.body);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Registration successful. You can now login.'),
-            ),
-          );
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => LoginPage(),
-            ),
-          );
-        } else {
-          // Check if the response body is not empty
-          if (response.body.isNotEmpty) {
-            final Map<String, dynamic> responseData = jsonDecode(response.body);
-            final String errorMessage =
-                responseData['msg'] ?? 'Registration failed. Please try again.';
+          Map<String, dynamic> data = jsonDecode(response.body);
+
+          if (data.containsKey('token') && data['token'] != null) {
+            await TokenManager.saveToken(
+                data['token']); // Save token using TokenManager
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(errorMessage),
-              ),
+              SnackBar(content: Text('Signup successful!')),
+            );
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => LoginPage()),
             );
           } else {
+            // Handle the case where the token is not present in the response
+            print('Token not found in the response');
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Registration failed. Please try again.'),
-              ),
+              SnackBar(content: Text('Signup failed: Token not found')),
             );
           }
+        } else {
+          // Handle non-201 status codes
+          print('Failed to signup: ${response.body}');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Signup failed: ${response.body}')),
+          );
         }
       } catch (e) {
+        // Handle network or other errors
+        print('Error occurred during signup: $e');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('An error occurred. Please try again.'),
-          ),
+          SnackBar(content: Text('Error occurred during signup: $e')),
         );
       } finally {
         setState(() {
@@ -316,62 +307,6 @@ class _SignupPageState extends State<SignupPage> {
                         ],
                       ),
                       child: TextFormField(
-                        controller: addressController,
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                            labelText: 'Address',
-                            labelStyle: GoogleFonts.inter(
-                                textStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: bgButton1)),
-                            enabledBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color: bgAppBar), // Default border color
-                            ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color: bgAppBar), // Border color when focused
-                            ),
-                            errorBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color:
-                                      bgRed), // Border color when error occurs
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.home_outlined,
-                              color: bgAppBar,
-                              size: 20,
-                            )),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your address.';
-                          }
-                          return null; // Return null for no error
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 25),
-                    Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: bgInput,
-                        borderRadius: BorderRadius.circular(7),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Color(0x1A000000),
-                              blurRadius: 4,
-                              spreadRadius: 0,
-                              offset: Offset(0, 4))
-                        ],
-                      ),
-                      child: TextFormField(
                         controller: passwordController,
                         obscureText: passToggle,
                         decoration: InputDecoration(
@@ -441,7 +376,7 @@ class _SignupPageState extends State<SignupPage> {
                         ],
                       ),
                       child: TextFormField(
-                        style: const TextStyle(backgroundColor: bgAppBar),
+                        // style: const TextStyle(backgroundColor: bgAppBar),
                         controller: confirmPasswordController,
                         obscureText: confirmToggle,
                         decoration: InputDecoration(
