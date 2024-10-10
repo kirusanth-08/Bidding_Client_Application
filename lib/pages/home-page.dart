@@ -137,132 +137,6 @@ class _HomePageState extends State<HomePage> {
                       final item = items[index];
                       return Card.outlined(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          side: const BorderSide(
-                            color: bgButton1,
-                            style: BorderStyle.solid,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const BiddingPage(),
-                                ),
-                              );
-                            },
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    height: 80,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: NetworkImage(item['images'][0]),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        item['name'],
-                                        style: const TextStyle(
-                                          color: bgBlack,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        "\$${item['price']}",
-                                        style: const TextStyle(
-                                          color: bgBlack,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w300,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "ends in ${item['bidEndTime']}",
-                                            style: const TextStyle(
-                                              height: 0,
-                                              color: bgAppBar,
-                                              fontSize: 10,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: bgButton,
-                                              borderRadius:
-                                                  BorderRadius.circular(9),
-                                            ),
-                                            child: const Center(
-                                              child: Padding(
-                                                padding: EdgeInsets.all(2.0),
-                                                child: Text(
-                                                  "Place Bid",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w300,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10.0,
-                      mainAxisSpacing: 10.0,
-                      childAspectRatio: 1.0,
-                    ),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-                      return Card.outlined(
-                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
                           side: const BorderSide(
                             color: bgButton1,
@@ -276,7 +150,10 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const BuyPage(),
+                                  builder: (context) =>
+                                      item['sellingType'] == 'Buy Now'
+                                          ? const BuyPage()
+                                          : const BiddingPage(),
                                 ),
                               );
                             },
@@ -290,7 +167,8 @@ class _HomePageState extends State<HomePage> {
                                     width: double.infinity,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image: NetworkImage(item['images'][0]),
+                                        image: NetworkImage(
+                                            '$apiUrl/' + item['images'][0]),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -332,12 +210,14 @@ class _HomePageState extends State<HomePage> {
                                           borderRadius:
                                               BorderRadius.circular(9),
                                         ),
-                                        child: const Center(
+                                        child: Center(
                                           child: Padding(
-                                            padding: EdgeInsets.all(4.0),
+                                            padding: const EdgeInsets.all(4.0),
                                             child: Text(
-                                              "View",
-                                              style: TextStyle(
+                                              item['sellingType'] == 'Buy Now'
+                                                  ? 'View'
+                                                  : 'Place Bid',
+                                              style: const TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.w300,
@@ -348,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -356,7 +236,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     },
                   ),
-                )
+                ),
               ],
             ),
           ),
