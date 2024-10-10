@@ -35,14 +35,14 @@ class _ProfilePageState extends State<ProfilePage> {
     userEmail = "hariyanne@example.com";
     userProfile = "https://picsum.photos/400/200"; // Example profile URL
 
-    // Load userId from SharedPreferences and assign to userName
-    _loadUserId();
+    // Load username from SharedPreferences and assign to userName
+    _loadUsername();
   }
 
-  Future<void> _loadUserId() async {
+  Future<void> _loadUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      userName = prefs.getString('userId') ?? userName;
+      userName = prefs.getString('username') ?? userName;
     });
   }
 

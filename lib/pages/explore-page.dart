@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'dart:convert'; // Add this import for JSON decoding
 import 'package:http/http.dart' as http; // Add this import for HTTP requests
+import 'package:shared_preferences/shared_preferences.dart'; // Add this import for SharedPreferences
 
 import 'package:bid_bazaar/config/config.dart';
 import 'package:flutter/material.dart';
@@ -29,23 +30,50 @@ class _ExplorePageState extends State<ExplorePage> {
   @override
   void initState() {
     super.initState();
-    _fetchLocations();
+    _loadLocations();
   }
 
-  Future<void> _fetchLocations() async {
-    final response = await http.get(
-        Uri.parse('$apiUrl/api/locations/v1')); // Replace with your API URL
+  Future<void> _loadLocations() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? cachedLocations = prefs.getString('locations');
 
-    if (response.statusCode == 200) {
-      Map<String, dynamic> responseData = json.decode(response.body);
-      List<dynamic> data = responseData['data'];
+    if (cachedLocations != null) {
+      // Load locations from cache
+      List<dynamic> decodedLocations = jsonDecode(cachedLocations);
       setState(() {
         _locations =
-            data.map((location) => Location.fromJson(location)).toList();
+            decodedLocations.map((json) => Location.fromJson(json)).toList();
         _isLoading = false;
       });
     } else {
-      throw Exception('Failed to load locations');
+      // Fetch locations from server
+      await _fetchLocations();
+    }
+  }
+
+  Future<void> _fetchLocations() async {
+    try {
+      final response = await http.get(
+          Uri.parse('$apiUrl/api/locations/v1')); // Replace with your API URL
+      if (response.statusCode == 200) {
+        List<dynamic> decodedLocations = jsonDecode(response.body)['data'];
+        setState(() {
+          _locations =
+              decodedLocations.map((json) => Location.fromJson(json)).toList();
+          _isLoading = false;
+        });
+
+        // Save locations to cache
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('locations', jsonEncode(decodedLocations));
+      } else {
+        throw Exception('Failed to load locations');
+      }
+    } catch (e) {
+      print('Error fetching locations: $e');
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 

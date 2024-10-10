@@ -10,6 +10,7 @@ import '../generated/l10n.dart';
 import '../pages/home-page.dart';
 import '../pages/provider/localization_provider.dart';
 import '../utils/token_manager.dart'; // Import TokenManager
+import '../services/profile_service.dart'; // Import ProfileService
 import 'signup_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -38,22 +39,9 @@ class _LoginPageState extends State<LoginPage> {
 
     if (token != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Stored Token'),
-              content: Text(token),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Bottom_Appbar()),
         );
       });
     }
@@ -89,18 +77,23 @@ class _LoginPageState extends State<LoginPage> {
         if (data.containsKey('token') &&
             data['token'] != null &&
             data.containsKey('userId') &&
-            data['userId'] != null) {
+            data['userId'] != null &&
+            data.containsKey('username') &&
+            data['username'] != null) {
           await TokenManager.saveToken(
               data['token']); // Save token using TokenManager
           await TokenManager.saveUserId(
               data['userId']); // Save userId using TokenManager
+          await TokenManager.saveUsername(
+              data['username']); // Save username using TokenManager
 
-          // Navigate to the next page or show a success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Login successful!'),
-            ),
-          );
+          // Fetch and cache profile details
+          // final profileService = ProfileService();
+          // final profile =
+          //     await profileService.fetchProfileDetails(data['token']);
+          // await profileService.cacheProfileDetails(profile);
+
+          // Navigate to Bottom_Appbar
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => Bottom_Appbar(),
