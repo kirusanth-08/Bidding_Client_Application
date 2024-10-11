@@ -20,17 +20,25 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
-  final List<int> randomNumbers =
-      List.generate(15, (index) => Random().nextInt(100));
-
+  List<dynamic> items = [];
+  List<dynamic> filteredItems = [];
   List<Location> _locations = [];
   bool _isLoading = true;
   String? selectedLocation;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadLocations();
+    _fetchItems();
+    _searchController.addListener(_filterItems);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadLocations() async {
@@ -41,8 +49,7 @@ class _ExplorePageState extends State<ExplorePage> {
       // Load locations from cache
       List<dynamic> decodedLocations = jsonDecode(cachedLocations);
       setState(() {
-        _locations =
-            decodedLocations.map((json) => Location.fromJson(json)).toList();
+        _locations = _parseLocations(decodedLocations);
         _isLoading = false;
       });
     } else {
@@ -58,8 +65,7 @@ class _ExplorePageState extends State<ExplorePage> {
       if (response.statusCode == 200) {
         List<dynamic> decodedLocations = jsonDecode(response.body)['data'];
         setState(() {
-          _locations =
-              decodedLocations.map((json) => Location.fromJson(json)).toList();
+          _locations = _parseLocations(decodedLocations);
           _isLoading = false;
         });
 
@@ -77,6 +83,55 @@ class _ExplorePageState extends State<ExplorePage> {
     }
   }
 
+  List<Location> _parseLocations(List<dynamic> data) {
+    List<Location> locations = [];
+    for (var province in data) {
+      for (var district in province['districts']) {
+        for (var subLocation in district['subLocations']) {
+          locations.add(Location.fromJson(subLocation));
+        }
+        locations.add(Location.fromJson(district));
+      }
+      locations.add(Location.fromJson(province));
+    }
+    return locations;
+  }
+
+  Future<void> _fetchItems() async {
+    try {
+      final response = await http
+          .get(Uri.parse('$apiUrl/api/items/v1')); // Replace with your API URL
+      if (response.statusCode == 200) {
+        setState(() {
+          items = jsonDecode(response.body);
+          filteredItems = items;
+          _isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load items');
+      }
+    } catch (e) {
+      print('Error fetching items: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _filterItems() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      filteredItems = items.where((item) {
+        final itemName = item['name'].toLowerCase();
+        final itemLocation = item['location'];
+        final matchesQuery = itemName.contains(query);
+        final matchesLocation =
+            selectedLocation == null || itemLocation == selectedLocation;
+        return matchesQuery && matchesLocation;
+      }).toList();
+    });
+  }
+
   void _showLocationList(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -88,8 +143,9 @@ class _ExplorePageState extends State<ExplorePage> {
               title: Text(_locations[index].name),
               onTap: () {
                 setState(() {
-                  selectedLocation = _locations[index].name;
+                  selectedLocation = _locations[index].id;
                 });
+                _filterItems();
                 Navigator.pop(context);
               },
             );
@@ -122,9 +178,7 @@ class _ExplorePageState extends State<ExplorePage> {
               height: 40,
               width: 350,
               child: TextField(
-                onChanged: (value) {
-                  setState(() {}); // Update UI on search query change
-                },
+                controller: _searchController,
                 decoration: InputDecoration(
                   hintText: "Search",
                   hintStyle: GoogleFonts.inter(
@@ -241,10 +295,12 @@ class _ExplorePageState extends State<ExplorePage> {
                   crossAxisCount: 2, // Number of items per row
                   crossAxisSpacing: 10.0, // Spacing between items horizontally
                   mainAxisSpacing: 10.0, // Spacing between items vertically
-                  childAspectRatio: 1.0, // Aspect ratio of each item
+                  childAspectRatio: 0.75, // Aspect ratio of each item
                 ),
-                itemCount: randomNumbers.length,
+                itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
+                  final item = filteredItems[index];
+                  final imageUrl = item['images'][0].replaceAll('\\', '/');
                   return Card.outlined(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
@@ -253,67 +309,48 @@ class _ExplorePageState extends State<ExplorePage> {
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              height: 80,
-                              width: double.infinity,
-                              decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                      image: NetworkImage(
-                                          'https://picsum.photos/400/200'),
-                                      fit: BoxFit.cover)),
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: CachedNetworkImage(
+                                imageUrl: '$apiUrl/$imageUrl',
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              ),
                             ),
                           ),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Melbourne Cricket',
-                                style: TextStyle(
-                                  color: bgBlack,
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              item['name'],
+                              style: GoogleFonts.poppins(
+                                textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ],
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                  "\$99", // Correct static string for displaying dollar amounts
-                                  style: TextStyle(
-                                    color: bgBlack,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w300,
-                                  ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              '\$${item['price']}',
+                              style: GoogleFonts.poppins(
+                                textStyle: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
                                 ),
                               ),
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: bgButton,
-                                    borderRadius: BorderRadius.circular(9),
-                                  ),
-                                  child: const Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.all(4.0),
-                                      child: Text(
-                                        "View",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w300,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
+                            ),
+                          ),
                         ],
                       ),
                     ),

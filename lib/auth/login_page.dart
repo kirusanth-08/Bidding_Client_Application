@@ -311,16 +311,16 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "Forgot your password?",
-                            style: GoogleFonts.inter(
-                                textStyle: const TextStyle(color: bgAppBar)),
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.end,
+                      //   children: [
+                      //     Text(
+                      //       "Forgot your password?",
+                      //       style: GoogleFonts.inter(
+                      //           textStyle: const TextStyle(color: bgAppBar)),
+                      //     ),
+                      //   ],
+                      // ),
                       const SizedBox(height: 30),
                       InkWell(
                         onTap: _isLoading ? null : _login,
