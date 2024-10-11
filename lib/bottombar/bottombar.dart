@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../config/config.dart'; // Import the config file where bgAppBar is defined
-import '../drawer/drawer.dart';
+import '../config/config.dart';
+// import '../drawer/drawer.dart';
 import '../pages/explore-page.dart';
 import '../pages/home-page.dart';
 import '../pages/profile-page.dart';
@@ -134,7 +134,7 @@ class _Bottom_AppbarState extends State<Bottom_Appbar>
         ),
         onTap: _onItemTapped,
       ),
-      drawer: const Drawer_Page(),
+      // drawer: const Drawer_Page(),
     );
   }
 }

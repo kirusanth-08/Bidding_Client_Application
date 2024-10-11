@@ -25,6 +25,7 @@ class _ExplorePageState extends State<ExplorePage> {
   List<Location> _locations = [];
   bool _isLoading = true;
   String? selectedLocation;
+  String? selectedLocationName;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -144,6 +145,7 @@ class _ExplorePageState extends State<ExplorePage> {
               onTap: () {
                 setState(() {
                   selectedLocation = _locations[index].id;
+                  selectedLocationName = _locations[index].name;
                 });
                 _filterItems();
                 Navigator.pop(context);
@@ -252,13 +254,15 @@ class _ExplorePageState extends State<ExplorePage> {
                 InkWell(
                   onTap: () => _showLocationList(
                       context), // Function to show the location list
+                  highlightColor: Colors.grey.withOpacity(0.2),
+                  splashColor: Colors.grey.withOpacity(0.3),
                   child: Card.outlined(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         side: const BorderSide(
                             color: bgButton1, style: BorderStyle.solid)),
-                    child: const Padding(
-                      padding: EdgeInsets.all(16.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -266,10 +270,14 @@ class _ExplorePageState extends State<ExplorePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Icon(Icons.location_on_outlined),
-                              Text(
-                                'Location',
-                                style: TextStyle(
-                                  color: bgBlack,
+                              SizedBox(
+                                width: 100, // Fixed width for the location name
+                                child: Text(
+                                  selectedLocationName ?? 'Location',
+                                  style: TextStyle(
+                                    color: bgBlack,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               SizedBox(
@@ -342,7 +350,7 @@ class _ExplorePageState extends State<ExplorePage> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              '\$${item['price']}',
+                              'Rs. ${item['price']}',
                               style: GoogleFonts.poppins(
                                 textStyle: const TextStyle(
                                   fontSize: 14,
