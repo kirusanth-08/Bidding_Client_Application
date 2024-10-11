@@ -25,7 +25,6 @@ class _SignupPageState extends State<SignupPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool passToggle = true;
   bool confirmToggle = true;
-  bool checkbox = false;
   bool _isLoading = false;
 
   Future<void> _signup() async {
@@ -34,6 +33,7 @@ class _SignupPageState extends State<SignupPage> {
         _isLoading = true;
       });
 
+      final String name = nameController.text;
       final String email = emailController.text;
       final String password = passwordController.text;
       final String phoneNumber = phoneController.text;
@@ -45,6 +45,7 @@ class _SignupPageState extends State<SignupPage> {
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(<String, String>{
+            'name': name, // Include name in the request
             'email': email,
             'phoneNumber': phoneNumber,
             'password': password,
@@ -58,8 +59,7 @@ class _SignupPageState extends State<SignupPage> {
           Map<String, dynamic> data = jsonDecode(response.body);
 
           if (data.containsKey('token') && data['token'] != null) {
-            await TokenManager.saveToken(
-                data['token']); // Save token using TokenManager
+            await TokenManager.saveToken(data['token']);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Signup successful!')),
             );
@@ -67,21 +67,18 @@ class _SignupPageState extends State<SignupPage> {
               MaterialPageRoute(builder: (context) => LoginPage()),
             );
           } else {
-            // Handle the case where the token is not present in the response
             print('Token not found in the response');
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Signup failed: Token not found')),
             );
           }
         } else {
-          // Handle non-201 status codes
           print('Failed to signup: ${response.body}');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Signup failed: ${response.body}')),
           );
         }
       } catch (e) {
-        // Handle network or other errors
         print('Error occurred during signup: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error occurred during signup: $e')),
@@ -114,9 +111,8 @@ class _SignupPageState extends State<SignupPage> {
                           textStyle:
                               const TextStyle(color: bgAppBar, fontSize: 30)),
                     ),
-                    const SizedBox(
-                      height: 70,
-                    ),
+                    const SizedBox(height: 70),
+                    // Full Name Field
                     Container(
                       height: 60,
                       decoration: BoxDecoration(
@@ -134,36 +130,30 @@ class _SignupPageState extends State<SignupPage> {
                         controller: nameController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                            labelText: 'Full Name',
-                            labelStyle: GoogleFonts.inter(
-                                textStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: bgButton1)),
-                            enabledBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color: bgAppBar), // Default border color
-                            ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color: bgAppBar), // Border color when focused
-                            ),
-                            errorBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color:
-                                      bgRed), // Border color when error occurs
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.person_outline,
-                              color: bgAppBar,
-                              size: 20,
-                            )),
+                          labelText: 'Full Name',
+                          labelStyle: GoogleFonts.inter(
+                              textStyle: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: bgButton1)),
+                          enabledBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: bgAppBar),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: bgAppBar),
+                          ),
+                          errorBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: bgRed),
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.person_outline,
+                            color: bgAppBar,
+                            size: 20,
+                          ),
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your full name.';
@@ -173,6 +163,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     const SizedBox(height: 25),
+                    // Email Field
                     Container(
                       height: 60,
                       decoration: BoxDecoration(
@@ -188,38 +179,32 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       child: TextFormField(
                         controller: emailController,
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                            labelText: 'Email',
-                            labelStyle: GoogleFonts.inter(
-                                textStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: bgButton1)),
-                            enabledBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color: bgAppBar), // Default border color
-                            ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color: bgAppBar), // Border color when focused
-                            ),
-                            errorBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color:
-                                      bgRed), // Border color when error occurs
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.email_outlined,
-                              color: bgAppBar,
-                              size: 20,
-                            )),
+                          labelText: 'Email',
+                          labelStyle: GoogleFonts.inter(
+                              textStyle: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: bgButton1)),
+                          enabledBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: bgAppBar),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: bgAppBar),
+                          ),
+                          errorBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: bgRed),
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.email_outlined,
+                            color: bgAppBar,
+                            size: 20,
+                          ),
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email address.';
@@ -237,6 +222,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     const SizedBox(height: 25),
+                    // Phone Number Field
                     Container(
                       height: 60,
                       decoration: BoxDecoration(
@@ -254,36 +240,30 @@ class _SignupPageState extends State<SignupPage> {
                         controller: phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
-                            labelText: 'Phone Number',
-                            labelStyle: GoogleFonts.inter(
-                                textStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: bgButton1)),
-                            enabledBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color: bgAppBar), // Default border color
-                            ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color: bgAppBar), // Border color when focused
-                            ),
-                            errorBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                  color:
-                                      bgRed), // Border color when error occurs
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.phone_outlined,
-                              color: bgAppBar,
-                              size: 20,
-                            )),
+                          labelText: 'Phone Number',
+                          labelStyle: GoogleFonts.inter(
+                              textStyle: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: bgButton1)),
+                          enabledBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: bgAppBar),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: bgAppBar),
+                          ),
+                          errorBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: bgRed),
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.phone_outlined,
+                            color: bgAppBar,
+                            size: 20,
+                          ),
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your phone number.';
@@ -293,6 +273,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     const SizedBox(height: 25),
+                    // Password Field
                     Container(
                       height: 60,
                       decoration: BoxDecoration(
@@ -318,18 +299,15 @@ class _SignupPageState extends State<SignupPage> {
                                   color: bgButton1)),
                           enabledBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                                color: bgAppBar), // Default border color
+                            borderSide: BorderSide(color: bgAppBar),
                           ),
                           focusedBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                                color: bgAppBar), // Border color when focused
+                            borderSide: BorderSide(color: bgAppBar),
                           ),
                           errorBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                                color: bgRed), // Border color when error occurs
+                            borderSide: BorderSide(color: bgRed),
                           ),
                           prefixIcon: const Icon(
                             Icons.lock_outline_rounded,
@@ -362,6 +340,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    // Confirm Password Field
                     Container(
                       height: 60,
                       decoration: BoxDecoration(
@@ -376,7 +355,6 @@ class _SignupPageState extends State<SignupPage> {
                         ],
                       ),
                       child: TextFormField(
-                        // style: const TextStyle(backgroundColor: bgAppBar),
                         controller: confirmPasswordController,
                         obscureText: confirmToggle,
                         decoration: InputDecoration(
@@ -388,18 +366,15 @@ class _SignupPageState extends State<SignupPage> {
                                   color: bgButton1)),
                           enabledBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                                color: bgAppBar), // Default border color
+                            borderSide: BorderSide(color: bgAppBar),
                           ),
                           focusedBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                                color: bgAppBar), // Border color when focused
+                            borderSide: BorderSide(color: bgAppBar),
                           ),
                           errorBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                                color: bgRed), // Border color when error occurs
+                            borderSide: BorderSide(color: bgRed),
                           ),
                           prefixIcon: const Icon(
                             Icons.lock_outline_rounded,
@@ -415,7 +390,7 @@ class _SignupPageState extends State<SignupPage> {
                                 confirmToggle
                                     ? Icons.visibility_outlined
                                     : Icons.visibility_off_outlined,
-                                color: passToggle ? bgButton : bgButton,
+                                color: confirmToggle ? bgButton : bgButton,
                               )),
                         ),
                         validator: (value) {
@@ -433,6 +408,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     const SizedBox(height: 25),
+                    // Sign Up Button
                     InkWell(
                       onTap: _isLoading ? null : _signup,
                       child: Container(
@@ -456,6 +432,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    // Already have an account
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -476,9 +453,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           },
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
+                        const SizedBox(width: 10),
                         GestureDetector(
                           child: Text(
                             "Login Now",

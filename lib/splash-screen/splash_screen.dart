@@ -12,6 +12,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String? errorMessage;
+
   @override
   void initState() {
     super.initState();
@@ -23,36 +25,50 @@ class _SplashScreenState extends State<SplashScreen> {
     String? token = prefs.getString('token');
 
     if (token != null) {
-      final response = await http.post(
-        Uri.parse('$apiUrl/api/users/v1/validate-token'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+      try {
+        final response = await http.post(
+          Uri.parse('$apiUrl/api/users/v1/validate-token'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['valid']) {
-          // Navigate to Bottom_Appbar if token is valid
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Bottom_Appbar()),
-          );
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          if (data['valid']) {
+            // Navigate to Bottom_Appbar if token is valid
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => Bottom_Appbar()),
+            );
+          } else {
+            // Clear the token if it is invalid or expired
+            await prefs.remove('token');
+            // Navigate to LoginPage if token is invalid or expired
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => LoginPage()),
+            );
+          }
         } else {
-          // Clear the token if it is invalid or expired
+          // Clear the token if token validation fails
           await prefs.remove('token');
-          // Navigate to LoginPage if token is invalid or expired
+          // Navigate to LoginPage if token validation fails
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => LoginPage()),
           );
         }
-      } else {
-        // Clear the token if token validation fails
-        await prefs.remove('token');
-        // Navigate to LoginPage if token validation fails
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
+      } catch (e) {
+        setState(() {
+          errorMessage = 'Failed to connect to the server. Please try again.';
+        });
+
+        // Retry after a delay
+        Future.delayed(Duration(seconds: 5), () {
+          setState(() {
+            errorMessage = null;
+          });
+          _checkToken();
+        });
       }
     } else {
       // Navigate to LoginPage if token does not exist
@@ -66,7 +82,23 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: CircularProgressIndicator(),
+        child: errorMessage == null
+            ? CircularProgressIndicator()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    errorMessage!,
+                    style: TextStyle(color: Colors.red, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _checkToken,
+                    child: Text('Retry'),
+                  ),
+                ],
+              ),
       ),
     );
   }
