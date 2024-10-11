@@ -78,10 +78,12 @@ class _Bottom_AppbarState extends State<Bottom_Appbar>
                         curve: Curves.easeInOut,
                       ),
                     ),
-                    child: Icon(Icons.camera, color: Colors.white),
+                    child: Icon(Icons.search,
+                        color: Colors.white), // Change to search icon
                   )
-                : Icon(Icons.camera_alt_outlined, color: Colors.grey),
-            label: 'Explore',
+                : Icon(Icons.search_outlined,
+                    color: Colors.grey), // Change to search icon
+            label: 'Search', // Change label to Search
           ),
           BottomNavigationBarItem(
             icon: _selectedIndex == 2
