@@ -74,18 +74,18 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(response.body);
 
+        print(data);
+
         if (data.containsKey('token') &&
             data['token'] != null &&
             data.containsKey('userId') &&
-            data['userId'] != null &&
-            data.containsKey('username') &&
-            data['username'] != null) {
+            data['userId'] != null) {
+
           await TokenManager.saveToken(
               data['token']); // Save token using TokenManager
           await TokenManager.saveUserId(
               data['userId']); // Save userId using TokenManager
-          await TokenManager.saveUsername(
-              data['username']); // Save username using TokenManager
+          // Save username using TokenManager
 
           // Fetch and cache profile details
           // final profileService = ProfileService();

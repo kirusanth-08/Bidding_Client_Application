@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         items = jsonDecode(response.body);
       });
+      print(items);
     } else {
       // Handle error response
       ScaffoldMessenger.of(context).showSnackBar(
@@ -152,8 +153,8 @@ class _HomePageState extends State<HomePage> {
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       item['sellingType'] == 'Buy Now'
-                                          ? const BuyPage()
-                                          : const BiddingPage(),
+                                          ? BuyPage(itemId: item['_id'])
+                                          : BiddingPage(itemId: item['_id']),
                                 ),
                               );
                             },
