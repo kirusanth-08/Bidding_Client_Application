@@ -323,8 +323,8 @@ class _ExplorePageState extends State<ExplorePage> {
                           MaterialPageRoute(
                             builder: (context) =>
                                 item['sellingType'] == 'Buy Now'
-                                    ? const BuyPage()
-                                    : const BiddingPage(),
+                                    ? BuyPage(itemId: item['_id'])
+                                          : BiddingPage(itemId: item['_id']),
                           ),
                         );
                       },

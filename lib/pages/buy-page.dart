@@ -140,7 +140,7 @@ class _BuyPageState extends State<BuyPage> {
                     child: Align(
                       alignment: Alignment.centerLeft, // Aligns the text to the left
                       child: Text(
-                        'Price: LKR ${itemDetails['price'].toString()}', // Convert int to String
+                        'Price: Rs.${itemDetails['price'].toString()}', // Convert int to String
                         style: TextStyle(
                           fontSize: 23, // Increase the font size
                           fontWeight: FontWeight.bold, // Make the text bold

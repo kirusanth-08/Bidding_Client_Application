@@ -190,46 +190,45 @@ class _HomePageState extends State<HomePage> {
                                   ],
                                 ),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        "\$${item['price']}",
-                                        style: const TextStyle(
-                                          color: bgBlack,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w300,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: bgButton,
-                                          borderRadius:
-                                              BorderRadius.circular(9),
-                                        ),
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Text(
-                                              item['sellingType'] == 'Buy Now'
-                                                  ? 'View'
-                                                  : 'Place Bid',
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w300,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Expanded(
+      child: Text(
+        "Rs${item['price']}",
+        style: const TextStyle(
+          color: bgBlack,
+          fontSize: 20,
+          fontWeight: FontWeight.w300,
+        ),
+        overflow: TextOverflow.ellipsis,
+      ),
+    ),
+    SizedBox(width: 5), // Optional spacing between the text and the button
+    Flexible(
+      child: Container(
+        width: 80, // Set a desired fixed width for the button
+        decoration: BoxDecoration(
+          color: bgButton,
+          borderRadius: BorderRadius.circular(9),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              item['sellingType'] == 'Buy Now' ? 'View' : 'Bid',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  ],
+),
+
                               ],
                             ),
                           ),

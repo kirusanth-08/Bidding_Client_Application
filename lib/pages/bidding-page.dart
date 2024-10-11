@@ -206,7 +206,7 @@ class _BiddingPageState extends State<BiddingPage> {
                             ),
                           ),
                           Text(
-                            "LKR ${itemDetails['price'].toString()}",
+                            "Rs. ${itemDetails['price'].toString()}",
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w300,
