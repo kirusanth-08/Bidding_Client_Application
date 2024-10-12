@@ -166,7 +166,7 @@ class _BiddingPageState extends State<BiddingPage> {
                           ),
                         ),
                         Text(
-                          "by ${itemDetails['userId']['email']}", // Display vendor name
+                          "by ${itemDetails['userId']['name']}", // Display vendor name
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 15,
@@ -283,7 +283,7 @@ class _BiddingPageState extends State<BiddingPage> {
                                           ),
                                         ),
                                         Text(
-                                          bidder['userId']['email'], // Display bidder's email
+                                          bidder['userId']['name'], // Display bidder's email
                                           style: const TextStyle(
                                             color: bgBlack,
                                             fontSize: 20,
@@ -407,13 +407,10 @@ class _BiddingPageState extends State<BiddingPage> {
                         return; // Exit if the field is empty
                       }
 
-                      print('User ID $userId'); // Log the userId
-                      print('Bid Price $bidPrice'); // Log the bid price
-                      print('Item ID ${widget.itemId}'); // Log the itemId
 
                       // Send the POST request
                       final response = await http.post(
-                        Uri.parse('http://192.168.8.100:3000/api/bid/v1/${widget.itemId}'),
+                        Uri.parse('$apiUrl/api/bid/v1/${widget.itemId}'),
                         headers: {
                           'Content-Type': 'application/json',
                         },
