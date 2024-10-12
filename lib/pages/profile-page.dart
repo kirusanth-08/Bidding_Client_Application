@@ -31,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     // Initialize user details (or fetch from API)
     userName = "username";
-    userEmail = "";
+    userEmail = "email";
     userProfile =
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"; // Example profile URL
 
@@ -43,7 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       userName = prefs.getString('username') ?? userName;
-      userEmail = prefs.getString('userEmail') ?? userEmail;
+      userEmail = prefs.getString('email') ?? userEmail;
     });
   }
 
@@ -123,7 +123,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     fontSize: 24, color: const Color.fromARGB(255, 0, 0, 0))),
             const SizedBox(height: 8),
             Text(userEmail ?? 'Loading...',
-                style: GoogleFonts.inter(fontSize: 14, color: bgWhite)),
+                style: GoogleFonts.inter(
+                    fontSize: 14, color: const Color.fromARGB(255, 0, 0, 0))),
 
             // Location and Phone (Inline Editing)
             const SizedBox(height: 32),

@@ -84,13 +84,11 @@ class _LoginPageState extends State<LoginPage> {
               data['token']); // Save token using TokenManager
           await TokenManager.saveUserId(
               data['userId']); // Save userId using TokenManager
-          // Save username using TokenManager
 
-          // Fetch and cache profile details
-          // final profileService = ProfileService();
-          // final profile =
-          //     await profileService.fetchProfileDetails(data['token']);
-          // await profileService.cacheProfileDetails(profile);
+          // Save username and email using SharedPreferences
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('username', data['username']);
+          await prefs.setString('email', data['email']);
 
           // Navigate to Bottom_Appbar
           Navigator.of(context).pushReplacement(
@@ -310,16 +308,6 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.end,
-                      //   children: [
-                      //     Text(
-                      //       "Forgot your password?",
-                      //       style: GoogleFonts.inter(
-                      //           textStyle: const TextStyle(color: bgAppBar)),
-                      //     ),
-                      //   ],
-                      // ),
                       const SizedBox(height: 30),
                       InkWell(
                         onTap: _isLoading ? null : _login,

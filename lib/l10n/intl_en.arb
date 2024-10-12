@@ -5,6 +5,8 @@
     "world_text": "This world is so beautiful",
     "language": "Language",
     "gm": "Good Morning",
+    "ga": "Good Afternoon",
+    "ge": "Good Evening",
     "create_account": "Create Account",
     "sign_up": "Sign Up",
     "already_account": "Already have an account",

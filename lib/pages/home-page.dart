@@ -31,26 +31,25 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchItems() async {
-  final response = await http.get(Uri.parse('$apiUrl/api/items/v1'));
+    final response = await http.get(Uri.parse('$apiUrl/api/items/v1'));
 
-  if (response.statusCode == 200) {
-    final allItems = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      final allItems = jsonDecode(response.body);
 
-    // Filter out sold items
-    setState(() {
-      items = allItems.where((item) => item['sold'] == false).toList();
-    });
-    print(items);
-  } else {
-    // Handle error response
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Failed to load items.'),
-      ),
-    );
+      // Filter out sold items
+      setState(() {
+        items = allItems.where((item) => item['sold'] == false).toList();
+      });
+      print(items);
+    } else {
+      // Handle error response
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to load items.'),
+        ),
+      );
+    }
   }
-}
-
 
   String _getGreetingMessage() {
     final hour = DateTime.now().hour;
@@ -58,9 +57,9 @@ class _HomePageState extends State<HomePage> {
     if (hour < 12) {
       return S.of(context).gm; // Good morning
     } else if (hour < 17) {
-      return S.of(context).ga; // Good afternoon
+      return S.of(context).gm; // Good afternoon
     } else {
-      return S.of(context).ge; // Good evening
+      return S.of(context).gm; // Good evening
     }
   }
 
