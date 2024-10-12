@@ -35,7 +35,7 @@ class _PostAddState extends State<PostAdd> {
 
   // Dropdown values
   String? selectedType;
-  List<String> types = ['House', 'Apartment', 'Land'];
+  List<String> types = ['Electronics', 'Vehicle', 'Property', 'Clothing','Furniture','Books'];
 
   // Radio button values
   String? selectedCondition;
@@ -280,7 +280,7 @@ class _PostAddState extends State<PostAdd> {
             children: [
               _buildTextFormField(
                 controller: nameController,
-                hintText: 'Enter your name',
+                hintText: 'Enter product name',
                 validator: (value) => value!.isEmpty ? 'Enter a name' : null,
               ),
               const SizedBox(height: fieldSpacing),
