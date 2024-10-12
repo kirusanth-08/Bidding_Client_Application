@@ -26,7 +26,7 @@ class _BuyPageState extends State<BuyPage> {
   }
 
   Future<void> _fetchItemDetails() async {
-    final response = await http.get(Uri.parse('http://192.168.8.100:3000/api/items/v1/${widget.itemId}'));
+    final response = await http.get(Uri.parse('$apiUrl/api/items/v1/${widget.itemId}'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -121,7 +121,7 @@ class _BuyPageState extends State<BuyPage> {
                         ),
                       ),
                       Text(
-                        "by ${itemDetails['userId']['email']}", // Display vendor name
+                        "by ${itemDetails['userId']['name']}", // Display vendor name
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 15,
