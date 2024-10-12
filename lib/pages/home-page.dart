@@ -31,22 +31,26 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchItems() async {
-    final response = await http.get(Uri.parse('$apiUrl/api/items/v1'));
+  final response = await http.get(Uri.parse('$apiUrl/api/items/v1'));
 
-    if (response.statusCode == 200) {
-      setState(() {
-        items = jsonDecode(response.body);
-      });
-      print(items);
-    } else {
-      // Handle error response
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to load items.'),
-        ),
-      );
-    }
+  if (response.statusCode == 200) {
+    final allItems = jsonDecode(response.body);
+
+    // Filter out sold items
+    setState(() {
+      items = allItems.where((item) => item['sold'] == false).toList();
+    });
+    print(items);
+  } else {
+    // Handle error response
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Failed to load items.'),
+      ),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
