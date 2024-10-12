@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,9 +30,10 @@ class _ProfilePageState extends State<ProfilePage> {
     phoneController.text = "0766235675";
 
     // Initialize user details (or fetch from API)
-    userName = "Hariyanne";
-    userEmail = "hariyanne@example.com";
-    userProfile = "https://picsum.photos/400/200"; // Example profile URL
+    userName = "username";
+    userEmail = "";
+    userProfile =
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"; // Example profile URL
 
     // Load username from SharedPreferences and assign to userName
     _loadUsername();
@@ -43,20 +43,21 @@ class _ProfilePageState extends State<ProfilePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       userName = prefs.getString('username') ?? userName;
+      userEmail = prefs.getString('userEmail') ?? userEmail;
     });
   }
 
   Future<void> _logout(BuildContext context) async {
     await TokenManager.removeToken(); // Clear the token
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('Logged out successfully!'),
       ),
     );
     // Navigate to the login page or any other appropriate page
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => LoginPage(), // Replace with your login page
+        builder: (context) => const LoginPage(), // Replace with your login page
       ),
     );
   }
@@ -66,17 +67,17 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Logout'),
-          content: Text('Are you sure you want to logout?'),
+          title: const Text('Confirm Logout'),
+          content: const Text('Are you sure you want to logout?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
             ),
             TextButton(
-              child: Text('Logout'),
+              child: const Text('Logout'),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
                 _logout(context); // Proceed with logout
@@ -91,146 +92,90 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: bgAppBar,
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         backgroundColor: bgAppBar,
         automaticallyImplyLeading: false,
         title: Text('Profile', style: GoogleFonts.inter(color: bgWhite)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app, color: bgWhite),
+            onPressed: () => _showLogoutConfirmationDialog(context),
+          )
+        ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 340,
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 60),
-                      height: 260,
-                      width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          side: const BorderSide(color: bgWhite),
-                        ),
-                        color: bgAppBar,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                'Name',
-                                style: GoogleFonts.inter(
-                                  textStyle: const TextStyle(
-                                    fontSize: 10,
-                                    color: bgWhite,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                userName ??
-                                    'Loading...', // Fallback to 'Loading...' if null
-                                style: GoogleFonts.inter(
-                                  textStyle: const TextStyle(
-                                    fontSize: 25,
-                                    color: bgWhite,
-                                  ),
-                                ),
-                              ),
-                              // Location input
-                              TextFormField(
-                                controller: locationController,
-                                decoration: InputDecoration(
-                                  hintText: 'Enter location',
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  prefixIcon: const Icon(Icons.home),
-                                  suffixIcon: const Icon(Icons.edit_note),
-                                ),
-                                validator: (value) =>
-                                    value!.isEmpty ? 'Enter a location' : null,
-                              ),
-                              const SizedBox(height: 13),
-                              // Phone input
-                              TextFormField(
-                                controller: phoneController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  hintText: 'Phone',
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  prefixIcon: const Icon(Icons.phone),
-                                  suffixIcon: const Icon(Icons.edit_note),
-                                ),
-                                validator: (value) => value!.isEmpty
-                                    ? 'Enter a phone number'
-                                    : null,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Profile Image
-                    Positioned(
-                      bottom: 235,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: bgWhite,
-                          ),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: userProfile != null && userProfile!.isNotEmpty
-                              ? Image.network(
-                                  userProfile!,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.asset(
-                                  "assets/images/profile.png",
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 13),
-              // Navigation containers (My Items and Post Ad)
-              _buildMenuItem(context, "My items",
-                  Icons.arrow_forward_ios_rounded, const WishList()),
-              const SizedBox(height: 13),
-              _buildMenuItem(context, "Post Ad",
-                  Icons.arrow_forward_ios_rounded, const PostAdd()),
-              const SizedBox(height: 13),
-              // Add the logout button
-              ElevatedButton(
-                onPressed: () => _showLogoutConfirmationDialog(context),
-                child: Text('Logout'),
-              ),
-            ],
-          ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Profile Image and User Info
+            CircleAvatar(
+              radius: 50,
+              backgroundImage: userProfile != null && userProfile!.isNotEmpty
+                  ? NetworkImage(userProfile!)
+                  : const AssetImage("assets/images/profile.png")
+                      as ImageProvider,
+            ),
+            const SizedBox(height: 16),
+            Text(userName ?? 'Loading...',
+                style: GoogleFonts.inter(
+                    fontSize: 24, color: const Color.fromARGB(255, 0, 0, 0))),
+            const SizedBox(height: 8),
+            Text(userEmail ?? 'Loading...',
+                style: GoogleFonts.inter(fontSize: 14, color: bgWhite)),
+
+            // Location and Phone (Inline Editing)
+            const SizedBox(height: 32),
+            _buildEditableField(
+              icon: Icons.location_on,
+              label: 'Location',
+              controller: locationController,
+            ),
+            const SizedBox(height: 16),
+            _buildEditableField(
+              icon: Icons.phone,
+              label: 'Phone',
+              controller: phoneController,
+              keyboardType: TextInputType.number,
+            ),
+
+            const SizedBox(height: 32),
+            // Navigation menu
+            _buildMenuItem(context, "My items", Icons.list, const WishList()),
+            const SizedBox(height: 16),
+            _buildMenuItem(context, "Post Ad", Icons.post_add, const PostAdd()),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildEditableField({
+    required IconData icon,
+    required String label,
+    required TextEditingController controller,
+    TextInputType? keyboardType,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, color: bgAppBar),
+        const SizedBox(width: 16),
+        Expanded(
+          child: TextField(
+            controller: controller,
+            keyboardType: keyboardType,
+            decoration: InputDecoration(
+              labelText: label,
+              filled: true,
+              fillColor: Colors.grey[200],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

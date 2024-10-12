@@ -110,6 +110,26 @@ class S {
     );
   }
 
+  /// `Good Evening`
+  String get ge {
+    return Intl.message(
+      'Good Evening',
+      name: 'ge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Good Afternoon`
+  String get ga {
+    return Intl.message(
+      'Good Afternoon',
+      name: 'ga',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Create Account`
   String get create_account {
     return Intl.message(

@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-const String apiUrl = 'http://192.168.8.100:3000';
+const String apiUrl = 'http://192.168.21.78:3000';
 const login = '$apiUrl/api/users/v1/login';
 const signup = '$apiUrl/api/register/v1/register';
 const event = '$apiUrl/api/register/v1/getevents';

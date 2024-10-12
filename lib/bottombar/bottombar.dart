@@ -21,8 +21,8 @@ class _Bottom_AppbarState extends State<Bottom_Appbar>
   final List<Widget> _pages = [
     const HomePage(),
     const ExplorePage(),
-    const HomePage(),
     const ProfilePage(),
+    // const HomePage(),
   ];
 
   @override
@@ -64,10 +64,10 @@ class _Bottom_AppbarState extends State<Bottom_Appbar>
                         curve: Curves.easeInOut,
                       ),
                     ),
-                    child: Icon(Icons.shop_2, color: Colors.white),
+                    child: Icon(Icons.home, color: Colors.white),
                   )
-                : Icon(Icons.shop_2_outlined, color: Colors.grey),
-            label: 'Shop',
+                : Icon(Icons.home_outlined, color: Colors.grey),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: _selectedIndex == 1
@@ -87,20 +87,6 @@ class _Bottom_AppbarState extends State<Bottom_Appbar>
           ),
           BottomNavigationBarItem(
             icon: _selectedIndex == 2
-                ? ScaleTransition(
-                    scale: Tween<double>(begin: 1.0, end: 1.2).animate(
-                      CurvedAnimation(
-                        parent: _animationController,
-                        curve: Curves.easeInOut,
-                      ),
-                    ),
-                    child: Icon(Icons.home, color: Colors.white),
-                  )
-                : Icon(Icons.home_outlined, color: Colors.grey),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: _selectedIndex == 3
                 ? ScaleTransition(
                     scale: Tween<double>(begin: 1.0, end: 1.2).animate(
                       CurvedAnimation(

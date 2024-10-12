@@ -48,6 +48,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  String _getGreetingMessage() {
+    final hour = DateTime.now().hour;
+
+    if (hour < 12) {
+      return S.of(context).gm; // Good morning
+    } else if (hour < 17) {
+      return S.of(context).ga; // Good afternoon
+    } else {
+      return S.of(context).ge; // Good evening
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<LocalizationProvider>(
@@ -106,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 3, horizontal: 15),
                       child: Text(
-                        S.of(context).gm,
+                        _getGreetingMessage(),
                         textAlign: TextAlign.start,
                         style: GoogleFonts.inter(
                           textStyle: const TextStyle(
@@ -190,45 +202,51 @@ class _HomePageState extends State<HomePage> {
                                   ],
                                 ),
                                 Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    Expanded(
-      child: Text(
-        "Rs${item['price']}",
-        style: const TextStyle(
-          color: bgBlack,
-          fontSize: 20,
-          fontWeight: FontWeight.w300,
-        ),
-        overflow: TextOverflow.ellipsis,
-      ),
-    ),
-    SizedBox(width: 5), // Optional spacing between the text and the button
-    Flexible(
-      child: Container(
-        width: 80, // Set a desired fixed width for the button
-        decoration: BoxDecoration(
-          color: bgButton,
-          borderRadius: BorderRadius.circular(9),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Text(
-              item['sellingType'] == 'Buy Now' ? 'View' : 'Bid',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ),
-        ),
-      ),
-    ),
-  ],
-),
-
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "Rs${item['price']}",
+                                        style: const TextStyle(
+                                          color: bgBlack,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w300,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        width:
+                                            5), // Optional spacing between the text and the button
+                                    Flexible(
+                                      child: Container(
+                                        width:
+                                            80, // Set a desired fixed width for the button
+                                        decoration: BoxDecoration(
+                                          color: bgButton,
+                                          borderRadius:
+                                              BorderRadius.circular(9),
+                                        ),
+                                        child: Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Text(
+                                              item['sellingType'] == 'Buy Now'
+                                                  ? 'View'
+                                                  : 'Bid',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w300,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),

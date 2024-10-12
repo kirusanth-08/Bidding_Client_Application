@@ -80,7 +80,6 @@ class _LoginPageState extends State<LoginPage> {
             data['token'] != null &&
             data.containsKey('userId') &&
             data['userId'] != null) {
-
           await TokenManager.saveToken(
               data['token']); // Save token using TokenManager
           await TokenManager.saveUserId(
